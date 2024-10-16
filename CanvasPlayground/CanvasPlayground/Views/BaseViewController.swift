@@ -82,4 +82,58 @@ extension BaseViewController {
             }
         }
     }
+
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let selectedView else { return }
+        if !selectedView.isSelected { return }
+        guard let image = selectedView.image else { return }
+
+        if let touch = touches.first{
+            let currentTouchPoint = touch.location(in: view)
+            let previousTouchPoint = touch.previousLocation(in: view)
+
+            let deltaX = currentTouchPoint.x - previousTouchPoint.x
+
+            let aspectRatio = image.size.width / image.size.height
+            let imageFrame = selectedView.frame
+
+            if resizeRect.topTouch && resizeRect.leftTouch {
+                selectedView.frame = CGRect(
+                    x: imageFrame.minX + deltaX,
+                    y: imageFrame.minY + deltaX / aspectRatio,
+                    width: imageFrame.width - deltaX,
+                    height: imageFrame.height - (deltaX / aspectRatio)
+                )
+            }
+
+            if resizeRect.topTouch && resizeRect.rightTouch {
+                selectedView.frame = CGRect(
+                    x: imageFrame.minX,
+                    y: imageFrame.minY - deltaX / aspectRatio,
+                    width: imageFrame.width + deltaX,
+                    height: imageFrame.height + (deltaX / aspectRatio)
+                )
+            }
+
+            if resizeRect.bottomTouch && resizeRect.leftTouch {
+                selectedView.frame = CGRect(
+                    x: imageFrame.minX + deltaX,
+                    y: imageFrame.minY,
+                    width: imageFrame.width - deltaX,
+                    height: imageFrame.height - (deltaX / aspectRatio)
+                )
+            }
+
+            if resizeRect.bottomTouch && resizeRect.rightTouch {
+                selectedView.frame = CGRect(
+                    x: imageFrame.minX,
+                    y: imageFrame.minY,
+                    width: imageFrame.width + deltaX,
+                    height: imageFrame.height + (deltaX / aspectRatio)
+                )
+            }
+
+            // TODO: 🔥 To check the snap points here
+        }
+    }
 }
