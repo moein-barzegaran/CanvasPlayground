@@ -48,8 +48,15 @@ class CanvasPlaygroundViewController: BaseViewController {
     // MARK: Actions
 
     @objc private func plusButtonTapped() {
-        let selectOverlayAction: (Overlay) -> Void = { _ in
-            // TODO: 🔥 Use added item from the sheet
+        let selectOverlayAction: (Overlay) -> Void = { [weak self] overlay in
+            guard let self else { return }
+            if let imageView = BaseImageView(
+                url: overlay.sourceUrl
+            ) {
+                canvas.addSubview(imageView)
+                imageView.delegate = self
+                stickers.append(imageView)
+            }
         }
 
         let viewModel = OverlaysListViewModel(

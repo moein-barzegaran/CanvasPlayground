@@ -11,6 +11,7 @@ class BaseViewController: UIViewController {
 
     var resizeRect = ResizeRect()
     var selectedView: BaseImageView?
+    var stickers: [BaseImageView] = []
 
     private lazy var topLeftCornerView = CornerView()
     private lazy var topRightCornerView = CornerView()
@@ -280,5 +281,17 @@ extension BaseViewController {
 
             // TODO: 🔥 To check the snap points here
         }
+    }
+}
+
+// MARK: - SelectableViewDelegate
+
+extension BaseViewController: SelectableViewDelegate {
+    func selectableView(
+        view: SelectableView,
+        isSelected: Bool
+    ) {
+        guard let baseImageView = view as? BaseImageView else { return }
+        self.setSelected(view: baseImageView, isSelected: isSelected)
     }
 }
