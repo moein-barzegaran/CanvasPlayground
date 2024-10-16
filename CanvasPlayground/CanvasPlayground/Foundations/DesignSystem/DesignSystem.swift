@@ -11,6 +11,7 @@ import SwiftUI
 struct DesignSystem {
     struct Size {
         static let plusButtonSize: CGFloat = 45
+        static let closeButtonSize: CGFloat = 30
     }
 
     struct Paddings {
@@ -25,4 +26,5 @@ extension UIColor {
 
 extension Color {
     static let mainBackground = Color("background")
+    static let bgSecondary = Color("backgroundSecondary")
 }

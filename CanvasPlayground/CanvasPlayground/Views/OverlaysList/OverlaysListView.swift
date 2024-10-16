@@ -16,6 +16,46 @@ struct OverlaysListView: View {
             Color.mainBackground
                 .edgesIgnoringSafeArea(.all)
 
+            VStack {
+                NavigationBar()
+            }
+        }
+    }
+}
+
+// MARK: - NavigationBar
+
+extension OverlaysListView {
+
+    @ViewBuilder
+    private func NavigationBar() -> some View {
+        ZStack {
+            HStack {
+                Spacer()
+
+                Button {
+                    // TODO: 🔥 Add dismiss action
+                } label: {
+                    Image(systemName: "xmark")
+                        .renderingMode(.template)
+                        .foregroundStyle(Color.white)
+                        .frame(
+                            width: DesignSystem.Size.closeButtonSize,
+                            height: DesignSystem.Size.closeButtonSize
+                        )
+                        .padding(4)
+                        .background(
+                            Circle()
+                                .fill(Color.bgSecondary)
+                        )
+                        .padding(DesignSystem.Paddings.defaultPadding)
+                }
+
+            }
+
+            Text("Stickers")
+                .foregroundStyle(Color.white)
+                .font(.headline)
         }
     }
 }
