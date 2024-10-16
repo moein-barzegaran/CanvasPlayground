@@ -22,3 +22,7 @@ extension UIColor {
     static let mainBackground = UIColor(named: "background")!
     static let bgSecondary = UIColor(named: "backgroundSecondary")!
 }
+
+extension Color {
+    static let mainBackground = Color("background")
+}
