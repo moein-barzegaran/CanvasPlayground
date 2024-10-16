@@ -12,6 +12,24 @@ class BaseViewController: UIViewController {
     var resizeRect = ResizeRect()
     var selectedView: BaseImageView?
 
+    private lazy var topLeftCornerView = CornerView()
+    private lazy var topRightCornerView = CornerView()
+    private lazy var bottomLeftCornerView = CornerView()
+    private lazy var bottomRightCornerView = CornerView()
+
+    private lazy var borderView: UIView = {
+        let borderView = UIView()
+        borderView.translatesAutoresizingMaskIntoConstraints = false
+        borderView.layer.borderColor = UIColor.selectedItemBorder.cgColor
+        borderView.layer.borderWidth = DesignSystem.Size.borderWidth
+        borderView.layer.shadowColor = UIColor.shadow.cgColor
+        borderView.layer.shadowOffset = .zero
+        borderView.layer.shadowOpacity = 0.4
+        borderView.layer.shadowRadius = 5
+        borderView.isUserInteractionEnabled = false
+        return borderView
+    }()
+
     private(set) lazy var canvas: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -21,6 +39,8 @@ class BaseViewController: UIViewController {
         view.clipsToBounds = true
         return view
     }()
+
+    private var panGestureRecognizer: UIPanGestureRecognizer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,8 +62,133 @@ class BaseViewController: UIViewController {
     }
 }
 
+// Set selection views here
+extension BaseViewController {
+
+    func deSelectView() {
+        for view in [
+            borderView,
+            topLeftCornerView,
+            topRightCornerView,
+            bottomLeftCornerView,
+            bottomRightCornerView
+        ] {
+            view.removeFromSuperview()
+        }
+
+        self.selectedView?.isSelected = false
+        self.selectedView = nil
+    }
+
+    private func setSelected(
+        view: BaseImageView,
+        isSelected: Bool
+    ) {
+        addSelectionViews(to: view, isSelected: isSelected)
+        addPanGestureRecognizerIfNeeded(for: view, isSelected)
+        self.selectedView = view
+
+        view.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
+        UIView.animate(
+            withDuration: 0.4,
+            delay: 0,
+            usingSpringWithDamping: 0.8,
+            initialSpringVelocity: 4,
+            options: .curveEaseInOut,
+            animations: {
+                view.transform = .identity
+            })
+    }
+
+    private func addSelectionViews(
+        to selectedView: UIView,
+        isSelected: Bool
+    ) {
+        // We will check if we added selection views before or not
+        if borderView.superview != nil {
+            deSelectView()
+        }
+
+        if !isSelected { return }
+
+        view.addSubview(borderView)
+
+        for corner in [
+            topLeftCornerView,
+            topRightCornerView,
+            bottomLeftCornerView,
+            bottomRightCornerView
+        ] {
+            corner.translatesAutoresizingMaskIntoConstraints = false
+            corner.widthAnchor.constraint(equalToConstant: DesignSystem.Size.corner).isActive = true
+            corner.heightAnchor.constraint(equalTo: corner.widthAnchor).isActive = true
+            view.addSubview(corner)
+        }
+
+        NSLayoutConstraint.activate([
+            topLeftCornerView.centerXAnchor.constraint(equalTo: selectedView.leadingAnchor),
+            topLeftCornerView.centerYAnchor.constraint(equalTo: selectedView.topAnchor),
+
+            topRightCornerView.centerXAnchor.constraint(equalTo: selectedView.trailingAnchor),
+            topRightCornerView.centerYAnchor.constraint(equalTo: selectedView.topAnchor),
+
+            bottomLeftCornerView.centerXAnchor.constraint(equalTo: selectedView.leadingAnchor),
+            bottomLeftCornerView.centerYAnchor.constraint(equalTo: selectedView.bottomAnchor),
+
+            bottomRightCornerView.centerXAnchor.constraint(equalTo: selectedView.trailingAnchor),
+            bottomRightCornerView.centerYAnchor.constraint(equalTo: selectedView.bottomAnchor),
+
+            borderView.topAnchor.constraint(equalTo: selectedView.topAnchor),
+            borderView.leadingAnchor.constraint(equalTo: selectedView.leadingAnchor),
+            borderView.trailingAnchor.constraint(equalTo: selectedView.trailingAnchor),
+            borderView.bottomAnchor.constraint(equalTo: selectedView.bottomAnchor),
+        ])
+    }
+
+    private func addPanGestureRecognizerIfNeeded(
+        for view: UIView,
+        _ isSelected: Bool
+    ) {
+        if let panGestureRecognizer,
+           let previousView = panGestureRecognizer.view {
+            previousView.removeGestureRecognizer(panGestureRecognizer)
+            self.panGestureRecognizer = nil
+        }
+
+        let panGestureRecognizer = UIPanGestureRecognizer(
+            target: self,
+            action: #selector(panGestureHandler)
+        )
+        view.addGestureRecognizer(panGestureRecognizer)
+        self.panGestureRecognizer = panGestureRecognizer
+    }
+}
+
 // We will detect the edge touch of selected view and resizing action here
 extension BaseViewController {
+
+    @objc private func panGestureHandler(_ gesture: UIPanGestureRecognizer) {
+        switch gesture.state {
+        case .began:
+            break
+        case .changed:
+            if let itemView = gesture.view {
+                let point = gesture.translation(in: self.view)
+                itemView.center = CGPoint(
+                    x: itemView.center.x + point.x,
+                    y: itemView.center.y + point.y
+                )
+                gesture.setTranslation(CGPoint.zero, in: self.view)
+
+                // TODO: 🔥 To check the snap points here
+            }
+        case .ended, .cancelled:
+            break
+
+        default:
+            break
+        }
+    }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let selectedView else { return }
