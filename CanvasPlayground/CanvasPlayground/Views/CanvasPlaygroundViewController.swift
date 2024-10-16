@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class CanvasPlaygroundViewController: UIViewController {
 
@@ -47,7 +48,8 @@ class CanvasPlaygroundViewController: UIViewController {
     // MARK: Actions
 
     @objc private func plusButtonTapped() {
-        // TODO: 🔥 Add action for plus button here
+        let vc = UIHostingController(rootView: OverlaysListView())
+        present(vc, animated: true)
     }
 }
 

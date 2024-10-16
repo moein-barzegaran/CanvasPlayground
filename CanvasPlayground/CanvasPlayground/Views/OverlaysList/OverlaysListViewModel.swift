@@ -44,6 +44,7 @@ final class OverlaysListViewModel: ObservableObject {
             case .success(let overlays):
                 DispatchQueue.main.async { [weak self] in
                     self?.overlays = overlays
+                    self?.selectedCategory = overlays.first
                 }
 
             case .failure:
