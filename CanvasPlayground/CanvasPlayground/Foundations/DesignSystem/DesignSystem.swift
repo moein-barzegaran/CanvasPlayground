@@ -19,6 +19,9 @@ struct DesignSystem {
             width: UIScreen.main.bounds.width * maxWidthRatio,
             height: UIScreen.main.bounds.height * maxHeightRatio
         )
+
+        static let borderWidth: CGFloat = 2
+        static let corner: CGFloat = 10
     }
 
     struct Paddings {
@@ -29,6 +32,8 @@ struct DesignSystem {
 extension UIColor {
     static let mainBackground = UIColor(named: "background")!
     static let bgSecondary = UIColor(named: "backgroundSecondary")!
+    static let selectedItemBorder = UIColor.white
+    static let shadow = UIColor.black
 }
 
 extension Color {
