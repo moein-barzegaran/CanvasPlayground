@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		507C7BAE2CC0028500B61582 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 507C7BAD2CC0028500B61582 /* SDWebImageSwiftUI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		507C7B702CBFF52200B61582 /* CanvasPlayground.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CanvasPlayground.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				507C7BAE2CC0028500B61582 /* SDWebImageSwiftUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 			);
 			name = CanvasPlayground;
 			packageProductDependencies = (
+				507C7BAD2CC0028500B61582 /* SDWebImageSwiftUI */,
 			);
 			productName = CanvasPlayground;
 			productReference = 507C7B702CBFF52200B61582 /* CanvasPlayground.app */;
@@ -107,6 +113,9 @@
 			);
 			mainGroup = 507C7B672CBFF52200B61582;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				507C7BAC2CC0028500B61582 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 507C7B712CBFF52200B61582 /* Products */;
 			projectDirPath = "";
@@ -333,6 +342,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		507C7BAC2CC0028500B61582 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		507C7BAD2CC0028500B61582 /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 507C7BAC2CC0028500B61582 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 507C7B682CBFF52200B61582 /* Project object */;
 }
