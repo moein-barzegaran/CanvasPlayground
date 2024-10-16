@@ -66,6 +66,7 @@ class BaseViewController: UIViewController {
         super.viewDidLoad()
 
         setupViews()
+        addGestureRecognizer()
     }
 
     // Private methods
@@ -98,6 +99,15 @@ class BaseViewController: UIViewController {
 
         view.bringSubviewToFront(verticalSnapLine)
         view.bringSubviewToFront(horizontalSnapLine)
+    }
+
+    private func addGestureRecognizer() {
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapGestureRecognized))
+        view.addGestureRecognizer(tapGestureRecognizer)
+    }
+
+    @objc private func tapGestureRecognized() {
+        deSelectView()
     }
 }
 
