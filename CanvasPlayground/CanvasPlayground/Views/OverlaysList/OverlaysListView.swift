@@ -12,6 +12,10 @@ struct OverlaysListView: View {
 
     @StateObject var viewModel = OverlaysListViewModel()
 
+    let columns = [
+        GridItem(.adaptive(minimum: 80))
+    ]
+    
     var body: some View {
         ZStack {
             Color.mainBackground
@@ -19,6 +23,10 @@ struct OverlaysListView: View {
 
             VStack {
                 NavigationBar()
+
+                HeaderCategories()
+
+                OverlaysList()
             }
         }
     }
@@ -95,5 +103,27 @@ extension OverlaysListView {
             .padding([.bottom, .horizontal])
         }
         .fixedSize(horizontal: false, vertical: true)
+    }
+}
+
+// MARK: - OverlaysList
+
+extension OverlaysListView {
+
+    @ViewBuilder
+    private func OverlaysList() -> some View {
+        ScrollView(.vertical, showsIndicators: false) {
+            LazyVGrid(columns: columns, spacing: 20) {
+                ForEach(viewModel.selectedCategoryItems, id: \.self) { item in
+                    WebImage(url: URL(string: item.sourceUrl))
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .onTapGesture {
+                            viewModel.setSelectedItem(item)
+                        }
+                }
+            }
+            .padding(.horizontal)
+        }
     }
 }

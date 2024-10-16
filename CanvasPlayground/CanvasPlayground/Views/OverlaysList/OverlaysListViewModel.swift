@@ -13,6 +13,10 @@ final class OverlaysListViewModel: ObservableObject {
     @Published var overlays: [OverlayCategory] = []
     @Published var selectedCategory: OverlayCategory?
 
+    var selectedCategoryItems: [Overlay] {
+        selectedCategory?.items ?? []
+    }
+    
     private let service: OverlaysServiceServicable
 
     init(
@@ -20,6 +24,10 @@ final class OverlaysListViewModel: ObservableObject {
     ) {
         self.service = service
         getOverlays()
+    }
+
+    func setSelectedItem(_ item: Overlay) {
+        // TODO: 🔥 Handle selecting item
     }
 
     func setSelectedOverlayCategory(_ category: OverlayCategory) {
