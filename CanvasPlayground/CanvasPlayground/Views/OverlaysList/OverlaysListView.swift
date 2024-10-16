@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct OverlaysListView: View {
 
@@ -57,5 +58,42 @@ extension OverlaysListView {
                 .foregroundStyle(Color.white)
                 .font(.headline)
         }
+    }
+}
+
+// MARK: - HeaderCategories
+
+extension OverlaysListView {
+
+    @ViewBuilder
+    private func HeaderCategories() -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            LazyHStack {
+                ForEach(viewModel.overlays, id: \.self) { category in
+                    VStack {
+                        WebImage(url: URL(string: category.thumbnailUrl))
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 40)
+
+                        Text(category.title)
+                            .foregroundStyle(Color.white)
+                            .font(.subheadline)
+                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(viewModel.selectedCategory == category ? Color.bgSecondary : .clear)
+                    )
+                    .onTapGesture {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            viewModel.setSelectedOverlayCategory(category)
+                        }
+                    }
+                }
+            }
+            .padding([.bottom, .horizontal])
+        }
+        .fixedSize(horizontal: false, vertical: true)
     }
 }

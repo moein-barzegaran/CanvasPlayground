@@ -11,6 +11,7 @@ import Combine
 final class OverlaysListViewModel: ObservableObject {
 
     @Published var overlays: [OverlayCategory] = []
+    @Published var selectedCategory: OverlayCategory?
 
     private let service: OverlaysServiceServicable
 
@@ -19,6 +20,10 @@ final class OverlaysListViewModel: ObservableObject {
     ) {
         self.service = service
         getOverlays()
+    }
+
+    func setSelectedOverlayCategory(_ category: OverlayCategory) {
+        selectedCategory = category
     }
 
     // Private methods
