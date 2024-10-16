@@ -8,7 +8,7 @@
 import UIKit
 import SwiftUI
 
-class CanvasPlaygroundViewController: UIViewController {
+class CanvasPlaygroundViewController: BaseViewController {
 
     private lazy var plusButton: UIButton = {
         var configuration = UIButton.Configuration.filled()
