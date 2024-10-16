@@ -20,6 +20,7 @@ struct DesignSystem {
             height: UIScreen.main.bounds.height * maxHeightRatio
         )
 
+        static let snapLineWidth: CGFloat = 2
         static let borderWidth: CGFloat = 2
         static let corner: CGFloat = 10
     }
@@ -34,6 +35,7 @@ extension UIColor {
     static let bgSecondary = UIColor(named: "backgroundSecondary")!
     static let selectedItemBorder = UIColor.white
     static let shadow = UIColor.black
+    static let snapLine = UIColor.green
 }
 
 extension Color {

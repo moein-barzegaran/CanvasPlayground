@@ -31,6 +31,22 @@ class BaseViewController: UIViewController {
         return borderView
     }()
 
+    private lazy var verticalSnapLine: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .snapLine
+        view.isHidden = true
+        return view
+    }()
+
+    private lazy var horizontalSnapLine: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .snapLine
+        view.isHidden = true
+        return view
+    }()
+
     private(set) lazy var canvas: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -40,6 +56,9 @@ class BaseViewController: UIViewController {
         view.clipsToBounds = true
         return view
     }()
+
+    private var verticalSnapLineLeadingConstraint: NSLayoutConstraint!
+    private var horizontalSnapLineTopConstraint: NSLayoutConstraint!
 
     private var panGestureRecognizer: UIPanGestureRecognizer?
 
@@ -53,13 +72,32 @@ class BaseViewController: UIViewController {
 
     private func setupViews() {
         view.addSubview(canvas)
+        view.addSubview(verticalSnapLine)
+        view.addSubview(horizontalSnapLine)
+
+        verticalSnapLineLeadingConstraint = verticalSnapLine.leadingAnchor.constraint(equalTo: canvas.leadingAnchor, constant: .zero)
+        horizontalSnapLineTopConstraint = horizontalSnapLine.topAnchor.constraint(equalTo: canvas.topAnchor, constant: .zero)
 
         NSLayoutConstraint.activate([
             canvas.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             canvas.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             canvas.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
             canvas.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.6),
+
+            verticalSnapLine.widthAnchor.constraint(equalToConstant: DesignSystem.Size.snapLineWidth),
+            verticalSnapLine.heightAnchor.constraint(equalTo: canvas.heightAnchor),
+            verticalSnapLine.topAnchor.constraint(equalTo: canvas.topAnchor, constant: -DesignSystem.Size.snapLineWidth / 2),
+
+            horizontalSnapLine.widthAnchor.constraint(equalTo: canvas.widthAnchor),
+            horizontalSnapLine.heightAnchor.constraint(equalToConstant: DesignSystem.Size.snapLineWidth),
+            horizontalSnapLine.leadingAnchor.constraint(equalTo: canvas.leadingAnchor, constant: -DesignSystem.Size.snapLineWidth / 2),
+
+            verticalSnapLineLeadingConstraint,
+            horizontalSnapLineTopConstraint
         ])
+
+        view.bringSubviewToFront(verticalSnapLine)
+        view.bringSubviewToFront(horizontalSnapLine)
     }
 }
 
@@ -181,7 +219,7 @@ extension BaseViewController {
                 )
                 gesture.setTranslation(CGPoint.zero, in: self.view)
 
-                // TODO: 🔥 To check the snap points here
+                checkSnapPoint(selectedView: itemView)
             }
         case .ended, .cancelled:
             break
@@ -279,8 +317,86 @@ extension BaseViewController {
                 )
             }
 
-            // TODO: 🔥 To check the snap points here
+            checkSnapPoint(selectedView: selectedView)
         }
+    }
+}
+
+// Check Snap point here
+extension BaseViewController {
+
+    private func checkSnapPoint(selectedView: UIView) {
+        let canvasWidth = floor(canvas.frame.width)
+        let canvasHeight = floor(canvas.frame.height)
+        let centerX = floor(canvasWidth / 2)
+        let centerY = floor(canvasHeight / 2)
+        let selectedViewMinX = floor(selectedView.frame.minX)
+        let selectedViewMinY = floor(selectedView.frame.minY)
+        let selectedViewMaxX = floor(selectedView.frame.maxX)
+        let selectedViewMaxY = floor(selectedView.frame.maxY)
+
+        if selectedViewMinX == .zero {
+            animateVerticalSnapLine()
+
+        } else if selectedViewMinY == .zero {
+            animateHorizontalSnapLine()
+
+        } else if selectedViewMaxX == canvasWidth {
+            animateVerticalSnapLine(to: canvasWidth)
+
+        } else if selectedViewMaxY == canvasHeight {
+            animateHorizontalSnapLine(to: canvasHeight)
+
+        } else if selectedViewMinX == centerX || selectedViewMaxX == centerX {
+            animateVerticalSnapLine(to: centerX)
+
+        } else if selectedViewMinY == centerY || selectedViewMaxY == centerY {
+            animateHorizontalSnapLine(to: centerY)
+
+        } else {
+            self.verticalSnapLine.isHidden = true
+            self.horizontalSnapLine.isHidden = true
+        }
+    }
+
+    private func animateVerticalSnapLine(to position: CGFloat = .zero) {
+        guard self.verticalSnapLine.isHidden else { return }
+        self.verticalSnapLineLeadingConstraint.constant = position != .zero
+        ? position - DesignSystem.Size.snapLineWidth / 2
+        : .zero
+
+        UIView.animate(
+            withDuration: 0.4,
+            delay: 0,
+            usingSpringWithDamping: 0.8,
+            initialSpringVelocity: 4,
+            options: .curveEaseInOut,
+            animations: {
+                self.verticalSnapLine.isHidden = false
+                self.verticalSnapLine.layoutIfNeeded()
+            })
+
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+    }
+
+    private func animateHorizontalSnapLine(to position: CGFloat = .zero) {
+        guard self.horizontalSnapLine.isHidden else { return }
+        self.horizontalSnapLineTopConstraint.constant = position != .zero
+        ? position - DesignSystem.Size.snapLineWidth / 2
+        : .zero
+
+        UIView.animate(
+            withDuration: 0.4,
+            delay: 0,
+            usingSpringWithDamping: 0.8,
+            initialSpringVelocity: 4,
+            options: .curveEaseInOut,
+            animations: {
+                self.horizontalSnapLine.isHidden = false
+                self.horizontalSnapLine.layoutIfNeeded()
+            })
+
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
     }
 }
 
