@@ -10,4 +10,32 @@ import Combine
 
 final class OverlaysListViewModel: ObservableObject {
 
+    @Published var overlays: [OverlayCategory] = []
+
+    private let service: OverlaysServiceServicable
+
+    init(
+        service: OverlaysServiceServicable = OverlaysService(client: MainHTTPClient())
+    ) {
+        self.service = service
+        getOverlays()
+    }
+
+    // Private methods
+
+    private func getOverlays() {
+        Task {
+            let result = await service.getOverlays()
+
+            switch result {
+            case .success(let overlays):
+                DispatchQueue.main.async { [weak self] in
+                    self?.overlays = overlays
+                }
+
+            case .failure:
+                break
+            }
+        }
+    }
 }
