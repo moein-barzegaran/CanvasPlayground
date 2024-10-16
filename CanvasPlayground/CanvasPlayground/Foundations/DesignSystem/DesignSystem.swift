@@ -9,9 +9,13 @@ import UIKit
 import SwiftUI
 
 struct DesignSystem {
-    struct Size {}
+    struct Size {
+        static let plusButtonSize: CGFloat = 45
+    }
 
-    struct Paddings {}
+    struct Paddings {
+        static let defaultPadding: CGFloat = 16
+    }
 }
 
 extension UIColor {
