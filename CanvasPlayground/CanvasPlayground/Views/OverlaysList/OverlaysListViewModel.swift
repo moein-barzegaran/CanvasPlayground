@@ -16,22 +16,32 @@ final class OverlaysListViewModel: ObservableObject {
     var selectedCategoryItems: [Overlay] {
         selectedCategory?.items ?? []
     }
-    
+
+    var dismissAction: (() -> Void)?
+
     private let service: OverlaysServiceServicable
+    private let selectOverlayAction: (Overlay) -> Void
 
     init(
+        selectOverlayAction: @escaping (Overlay) -> Void,
         service: OverlaysServiceServicable = OverlaysService(client: MainHTTPClient())
     ) {
+        self.selectOverlayAction = selectOverlayAction
         self.service = service
         getOverlays()
     }
 
     func setSelectedItem(_ item: Overlay) {
-        // TODO: 🔥 Handle selecting item
+        selectOverlayAction(item)
+        dismissAction?()
     }
 
     func setSelectedOverlayCategory(_ category: OverlayCategory) {
         selectedCategory = category
+    }
+
+    func dismissButtonTapped() {
+        dismissAction?()
     }
 
     // Private methods

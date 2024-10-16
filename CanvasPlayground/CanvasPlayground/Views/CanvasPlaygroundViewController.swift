@@ -48,7 +48,20 @@ class CanvasPlaygroundViewController: UIViewController {
     // MARK: Actions
 
     @objc private func plusButtonTapped() {
-        let vc = UIHostingController(rootView: OverlaysListView())
+        let selectOverlayAction: (Overlay) -> Void = { _ in
+            // TODO: 🔥 Use added item from the sheet
+        }
+
+        let viewModel = OverlaysListViewModel(
+            selectOverlayAction: selectOverlayAction
+        )
+
+        let vc = UIHostingController(rootView: OverlaysListView(viewModel: viewModel))
+
+        viewModel.dismissAction = { [weak vc] in
+            vc?.dismiss(animated: true)
+        }
+
         present(vc, animated: true)
     }
 }

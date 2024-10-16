@@ -10,7 +10,11 @@ import SDWebImageSwiftUI
 
 struct OverlaysListView: View {
 
-    @StateObject var viewModel = OverlaysListViewModel()
+    @StateObject var viewModel: OverlaysListViewModel
+
+    init(viewModel: OverlaysListViewModel) {
+        self._viewModel = StateObject(wrappedValue: viewModel)
+    }
 
     let columns = [
         GridItem(.adaptive(minimum: 80))
@@ -43,7 +47,7 @@ extension OverlaysListView {
                 Spacer()
 
                 Button {
-                    // TODO: 🔥 Add dismiss action
+                    viewModel.dismissButtonTapped()
                 } label: {
                     Image(systemName: "xmark")
                         .renderingMode(.template)
